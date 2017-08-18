@@ -10,13 +10,29 @@ class Messenger(object):
     def __init__(self, slack_clients):
         self.clients = slack_clients
 
-    def send_message(self, channel_id, msg):
+    def send_message(self, channel_id, msg, thread_ts=None):
         # in the case of Group and Private channels, RTM channel payload is a complex dictionary
         if isinstance(channel_id, dict):
             channel_id = channel_id['id']
         logger.debug('Sending msg: %s to channel: %s' % (msg, channel_id))
-        channel = self.clients.rtm.server.channels.find(channel_id)
-        channel.send_message(msg)
+        # channel = self.clients.rtm.server.channels.find(channel_id)
+        self.clients.rtm.api_call(
+            'chat.postMessage',
+            channel=channel_id,
+            text=msg,
+            thread_ts=thread_ts
+        )
+
+    def new_task(self, event):
+        """
+        create new thread on user's message confirming their creation of task
+        """
+
+        # validate the task
+
+        # reply to the message
+        msg = ':ok_hand: Ok! What\'s the name of the task?'
+        self.send_message(event['channel'], msg, thread_ts=event['ts'])
 
     def write_help_message(self, channel_id):
         bot_uid = self.clients.bot_user_id()

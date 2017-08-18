@@ -35,23 +35,28 @@ class RtmEventHandler(object):
     def _handle_message(self, event):
         # Filter out messages from the bot itself, and from non-users (eg. webhooks)
         if ('user' in event) and (not self.clients.is_message_from_me(event['user'])):
-
+            import pdb; pdb.set_trace()
             msg_txt = event['text']
 
             if self.clients.is_bot_mention(msg_txt) or self._is_direct_message(event['channel']):
-                # e.g. user typed: "@pybot tell me a joke!"
-                if 'help' in msg_txt:
-                    self.msg_writer.write_help_message(event['channel'])
-                elif re.search('hi|hey|hello|howdy', msg_txt):
-                    self.msg_writer.write_greeting(event['channel'], event['user'])
-                elif 'joke' in msg_txt:
-                    self.msg_writer.write_joke(event['channel'])
-                elif 'attachment' in msg_txt:
-                    self.msg_writer.demo_attachment(event['channel'])
-                elif 'echo' in msg_txt:
-                    self.msg_writer.send_message(event['channel'], msg_txt)
+                
+                # routes:   
+                    # new task :task_name
+                    # new event :task_name
+                    # :task_name status
+                    # help
+                if re.search(r'^new task', msg_txt):
+                    # add new task
+                    pass
+                elif re.search(r'^new event', msg_txt):
+                    # add new event
+                    pass
+                elif 'status' in msg_txt:
+                    # get status of a task
+                    pass
                 else:
-                    self.msg_writer.write_prompt(event['channel'])
+                    # help!
+                    pass
 
     def _is_direct_message(self, channel):
         """Check if channel is a direct message channel

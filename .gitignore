@@ -60,3 +60,6 @@ target/
 
 .DS_Store
 plot.png
+
+# custom ignores
+.env

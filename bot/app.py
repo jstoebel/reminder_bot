@@ -9,6 +9,8 @@ from beepboop import bot_manager
 from slack_bot import SlackBot
 from slack_bot import spawn_bot
 
+import settings
+
 logger = logging.getLogger(__name__)
 
 
