@@ -7,6 +7,8 @@ from models import Task
 import json
 import dateparser
 
+import schedule
+
 app_config = json.loads(open('app.json').read())
 app = Flask(app_config['name'])
 connect(app_config['name'])
@@ -32,11 +34,10 @@ def new_task():
         match = re.search(regex, text)
         name, freq_str = match.group('name').strip(), match.group('freq')
         frequency = int(freq_str)
-        attrs = {'name': name, 'frequency': frequency}
+        attrs = {'name': name, 'frequency': frequency, 'channel': request.form['channel_id']}
     except (ValueError, AttributeError) as err:
         error_msg = 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'
         return jsonify({'text': error_msg})
-
     try:
         # save to database
         task = Task(**attrs)

@@ -6,13 +6,12 @@ class Task(Document):
     fields:
         name(str): the name of the task (required)
         frequency(int): the frequency of the task in hours (required)
-        quantity(int, optional): the quantity required in each cycle
-        units(string, optional): the name the unit (example, ounces)
+        channel(string): the channel where the task was created
+
     '''
     name = StringField(required=True, unique=True)
     frequency = IntField(required=True)
-    quantity = IntField()
-    units = StringField()
+    channel = StringField(required=True)
     events = ListField(DateTimeField(default=datetime.datetime.now))
 
     def last_event(self):
@@ -50,5 +49,7 @@ class Task(Document):
         '''
 
         last_done = self.last_event()
+        if last_done is None:
+            return True
         hours_since_last_event = (datetime.datetime.now() - last_done).seconds / 3600
         return hours_since_last_event >= self.frequency
