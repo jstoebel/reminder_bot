@@ -39,6 +39,7 @@ def new_task():
     try:
         # save to database
         task = Task(**attrs)
+        import pdb; pdb.set_trace()
         task.save()
         time_unit = 'hours' if frequency > 1 else 'hour'
         return jsonify(
