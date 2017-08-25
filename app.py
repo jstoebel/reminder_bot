@@ -9,7 +9,6 @@ import dateparser
 
 app_config = json.loads(open('app.json').read())
 app = Flask(app_config['name'])
-connect(app_config['name'])
 
 @app.route('/', methods=['GET'])
 def index():
@@ -39,7 +38,6 @@ def new_task():
     try:
         # save to database
         task = Task(**attrs)
-        import pdb; pdb.set_trace()
         task.save()
         time_unit = 'hours' if frequency > 1 else 'hour'
         return jsonify(
@@ -55,7 +53,7 @@ def task_status():
     task_name = request.form['text']
     try:
         if not task_name:
-            raise DoesNotExist
+            raise DoesNotExist # don't bother with db lookup if no value given
         task = Task.objects.get(name=task_name)
         return jsonify({'text': task.task_report()})
     except DoesNotExist:
@@ -114,5 +112,6 @@ def remove_task():
 
 if __name__ == '__main__':
     import schedule
+    connect(app_config['name'])
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)

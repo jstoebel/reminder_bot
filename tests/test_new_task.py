@@ -1,24 +1,11 @@
+import json
 import sys
 sys.path.append('.')
-import app as app_file
-from mongoengine import connect
 
 from models import Task
+import test_base
 
-import os
-import tempfile
-import json
-
-class TestNewTask:
-    def setup_method(self, method):
-        print('setup')
-        app_file.app.testing = True
-        self.app = app_file.app.test_client()
-        self.db_client = connect('reminder_bot_test')
-
-    def teardown_method(self, method):
-        print('teardown')
-        self.db_client.drop_database('reminder_bot_test')
+class TestNewTask(test_base.TestBase):
 
     def make_new_task(self, text, channel_id):
         '''
@@ -45,29 +32,29 @@ class TestNewTask:
         assert task.frequency == int(expected_attrs['freq'])
         assert task.channel == expected_attrs['channel_id']
 
-    # def test_new_task_missing_name(self):
-    #     text = 'freq=3'
-    #     res = self.make_new_task(text, 'general')
-    #     assert res.status == '200 OK'
-    #     assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
+    def test_new_task_missing_name(self):
+        text = 'freq=3'
+        res = self.make_new_task(text, 'general')
+        assert res.status == '200 OK'
+        assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
 
-    # def test_new_task_missing_freq(self):
-    #     text = 'task=eat pizza'
-    #     res = self.make_new_task(text, 'general')
-    #     assert res.status == '200 OK'
-    #     assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
+    def test_new_task_missing_freq(self):
+        text = 'task=eat pizza'
+        res = self.make_new_task(text, 'general')
+        assert res.status == '200 OK'
+        assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
 
-    # def test_new_task_bad_freq(self):
-    #     text = 'task=eat pizza freq=spam'
-    #     res = self.make_new_task(text, 'general')
-    #     assert res.status == '200 OK'
-    #     assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
+    def test_new_task_bad_freq(self):
+        text = 'task=eat pizza freq=spam'
+        res = self.make_new_task(text, 'general')
+        assert res.status == '200 OK'
+        assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
 
-    # def test_new_task_missing_channel(self):
-    #     text = 'task=eat pizza freq=1'
-    #     res = self.make_new_task(text, None)
-    #     assert res.status == '200 OK'
-    #     assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
+    def test_new_task_missing_channel(self):
+        text = 'task=eat pizza freq=1'
+        res = self.make_new_task(text, None)
+        assert res.status == '200 OK'
+        assert json.loads(res.get_data()) == {'text': 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'}
 
 if __name__ == '__main__':
     unittest.main()
