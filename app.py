@@ -7,11 +7,8 @@ from models import Task
 import json
 import dateparser
 
-import schedule
-
 app_config = json.loads(open('app.json').read())
 app = Flask(app_config['name'])
-connect(app_config['name'])
 
 @app.route('/', methods=['GET'])
 def index():
@@ -56,7 +53,7 @@ def task_status():
     task_name = request.form['text']
     try:
         if not task_name:
-            raise DoesNotExist
+            raise DoesNotExist # don't bother with db lookup if no value given
         task = Task.objects.get(name=task_name)
         return jsonify({'text': task.task_report()})
     except DoesNotExist:
@@ -109,25 +106,10 @@ def remove_task():
         task.delete()
         return jsonify({'text': f':boom: remove task {task.name}'})
     except DoesNotExist:
-        return jsonify({'text': f':thinking_face: could not find task {task.name}.'})
-
-    pass
-
-# def _task_report(task):
-#     '''
-#     task(Task object)
-#     return string reporting on the tasks last events
-#     example: f'{task.name}: last done @ {last_event:%m/%d/%Y %H:%M:%S}'
-#     or 
-#     f'{task.name}: last done never'
-#     '''
-
-#     if task.events:
-#         last_event = task.events[-1]
-#         return f'{task.name}: last done @ {last_event:%m/%d/%Y %H:%M:%S}'
-#     else:
-#         return f'{task.name}: last done never'
+        return jsonify({'text': f':thinking_face: could not find task {task_name}.'})
 
 if __name__ == '__main__':
+    import schedule
+    connect(app_config['name'])
     port = int(os.environ.get('PORT', 5000))
-app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
