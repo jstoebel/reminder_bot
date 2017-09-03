@@ -108,8 +108,6 @@ def remove_task():
     except DoesNotExist:
         return jsonify({'text': f':thinking_face: could not find task {task_name}.'})
 
-    pass
-
 if __name__ == '__main__':
     import schedule
     connect(app_config['name'])
