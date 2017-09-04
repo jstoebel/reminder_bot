@@ -1,4 +1,5 @@
 amqp==2.2.1
+APScheduler==3.3.1
 beepboop==0.1.1
 billiard==3.5.0.3
 celery==4.1.0
@@ -8,6 +9,8 @@ click==6.6
 dateparser==0.6.0
 docopt==0.6.2
 docutils==0.12
+factory-boy==2.9.2
+Faker==0.7.18
 Flask==0.11.1
 Flask-PyMongo==0.5.1
 Flask-SQLAlchemy==2.1
@@ -23,8 +26,10 @@ mongoengine==0.13.0
 prompt-toolkit==1.0.15
 psycopg2==2.6.2
 ptpython==0.41
+py==1.4.34
 Pygments==2.2.0
 pymongo==3.5.0
+pytest==3.2.1
 python-daemon==2.1.1
 python-dateutil==2.6.1
 python-dotenv==0.6.5
