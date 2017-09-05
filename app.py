@@ -6,8 +6,9 @@ from mongoengine import connect, DoesNotExist
 from models import Task
 import json
 import dateparser
-
+from settings import MONGODB_SETTINGS
 app_config = json.loads(open('app.json').read())
+
 app = Flask(app_config['name'])
 
 @app.route('/', methods=['GET'])
@@ -110,6 +111,6 @@ def remove_task():
 
 if __name__ == '__main__':
     import schedule
-    connect(app_config['name'])
+    connect(**MONGODB_SETTINGS)
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
