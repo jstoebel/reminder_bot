@@ -34,6 +34,7 @@ def new_task():
         frequency = int(freq_str)
         attrs = {'name': name, 'frequency': frequency, 'channel': request.form['channel_id']}
     except (ValueError, AttributeError) as err:
+        print(err)
         error_msg = 'Please provide a task name and its frequency (in hours). Example: name=eat pizza freq=3'
         return jsonify({'text': error_msg})
     try:
@@ -46,7 +47,8 @@ def new_task():
                 'text': f':ok_hand: Got it! I\'ll remind you to {name} every {frequency} {time_unit}'
             }
         )
-    except:
+    except BaseException as e:
+        print(e)
         return jsonify({'text': ':thinking_face: hmm... something went wrong. Can you try again later?'})
 
 @app.route('/task_status', methods=['POST'])
@@ -57,7 +59,8 @@ def task_status():
             raise DoesNotExist # don't bother with db lookup if no value given
         task = Task.objects.get(name=task_name)
         return jsonify({'text': task.task_report()})
-    except DoesNotExist:
+    except DoesNotExist as err:
+        print(err)
         # couldn't find that task. get all tasks
         all_tasks = '\n'.join([t.task_report() for t in Task.objects])
         return jsonify({'text': f':thinking_face: hmmm...I couldn\'t find that task. Here are all of the tasks\n {all_tasks}'})
@@ -82,13 +85,15 @@ def new_event():
         if time_str is not None and time is None:
             return jsonify({'text': ':thinking_face: I didn\'t understand that time. Please correct it and try again.'})
     except (ValueError, AttributeError) as err:
+        print(err)
         error_msg = 'Please provide an event and the time it happened. Example: task=eat pizza time=12:00'
         return jsonify({'text': error_msg})
 
     # pull the task from the database
     try:
         task = Task.objects.get(name=task_name)
-    except DoesNotExist:
+    except DoesNotExist as err:
+        print(err)
         return jsonify({'text': ':thinking_face: hmmm...I couldn\'t find that task.'})
 
     # create the event and add it
@@ -106,7 +111,8 @@ def remove_task():
         task = Task.objects.get(name=task_name)
         task.delete()
         return jsonify({'text': f':boom: remove task {task.name}'})
-    except DoesNotExist:
+    except DoesNotExist as err:
+        print(err)
         return jsonify({'text': f':thinking_face: could not find task {task_name}.'})
 
 if __name__ == '__main__':
