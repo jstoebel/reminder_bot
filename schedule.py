@@ -36,7 +36,7 @@ scheduler = BackgroundScheduler()
 scheduler.start()
 scheduler.add_job(
     func=check_all_tasks,
-    trigger=IntervalTrigger(seconds=10),
+    trigger=IntervalTrigger(seconds=3600),
     id='checking tasks',
     name='check task status every 5 seconds',
     replace_existing=True)
