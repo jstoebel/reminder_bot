@@ -116,7 +116,7 @@ def remove_task():
         return jsonify({'text': f':thinking_face: could not find task {task_name}.'})
 
 if __name__ == '__main__':
+    connect(MONGODB_SETTINGS['db'], MONGODB_SETTINGS['name'])
     import schedule
-    connect(**MONGODB_SETTINGS)
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
