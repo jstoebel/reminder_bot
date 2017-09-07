@@ -6,7 +6,6 @@ from mongoengine import connect, DoesNotExist
 from models import Task
 import json
 import dateparser
-from settings import MONGODB_SETTINGS
 app_config = json.loads(open('app.json').read())
 
 app = Flask(app_config['name'])
@@ -17,6 +16,11 @@ def index():
 
 @app.route('/new_task', methods=['POST'])
 def new_task():
+
+    print('DID WE CONNECT?')
+    from mongoengine import connection
+    print(connection.get_connection())  
+
     '''
     create a new task
         expected format: /new_task name=eat pizza freq=1
@@ -25,6 +29,7 @@ def new_task():
         quantity(int, optional): the quantity required in each cycle
         units(string, optional): the name the unit (example, ounces)
     '''
+    # import pdb; pdb.set_trace()
     try:
         # try to set the attributes
         text = request.form['text']
@@ -48,6 +53,8 @@ def new_task():
             }
         )
     except BaseException as e:
+        print('here are the env vars')
+        print(os.environ)
         print(e)
         return jsonify({'text': ':thinking_face: hmm... something went wrong. Can you try again later?'})
 
@@ -116,7 +123,8 @@ def remove_task():
         return jsonify({'text': f':thinking_face: could not find task {task_name}.'})
 
 if __name__ == '__main__':
-    connect(MONGODB_SETTINGS['db'], MONGODB_SETTINGS['name'])
+    mongo_host = os.environ.get('MONGODB_URI')
+    connect(alias='default', host='mongodb://heroku_lcqgpgrf:17bmak8gsnh4q96ppsmiga05t7@ds121464.mlab.com:21464/heroku_lcqgpgrf')
     import schedule
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
