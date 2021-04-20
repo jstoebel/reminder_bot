@@ -26,7 +26,7 @@ mongoengine==0.13.0
 prompt-toolkit==1.0.15
 psycopg2==2.6.2
 ptpython==0.41
-py==1.4.34
+py==1.10.0
 Pygments==2.2.0
 pymongo==3.5.0
 pytest==3.2.1
